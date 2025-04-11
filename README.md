@@ -32,7 +32,7 @@ BITRIX_CLIENT_SECRET=your_client_secret
 
 ## Cấu hình Bitrix24
 
-1. Tạo ứng dụng trong [Bitrix24 Developer Cabinet](https://dev.1c-bitrix.ru/applications/)
+1. Tạo ứng dụng cục bộ trong Bitrix24 Developer 
 
 2. Trong phần cài đặt ứng dụng, cấu hình:
    - Handler URL: `https://your-ngrok-domain/auth/install-event`
@@ -47,7 +47,7 @@ BITRIX_CLIENT_SECRET=your_client_secret
 ngrok http 3000
 ```
 
-2. Copy ngrok URL (https://xxx.ngrok.io) và cập nhật vào cài đặt ứng dụng trong Bitrix24
+2. Copy ngrok URL (https://xxx.ngrok.io) và cập nhật vào cài đặt ứng dụng cục bộ (Handler URL, Auth URL) trong Bitrix24
 
 3. Chạy server:
 ```bash
