@@ -7,7 +7,6 @@ const fs = require('fs').promises;
 
 const app = express();
 
-// Security middleware
 app.use(helmet({
   contentSecurityPolicy: {
     directives: {
@@ -23,23 +22,19 @@ app.use(helmet({
   crossOriginResourcePolicy: { policy: "cross-origin" }
 }));
 
-// Request parsing middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
-// Logging middleware
 const logFormat = process.env.NODE_ENV === 'production'
   ? 'combined'
   : 'dev';
 
 if (process.env.NODE_ENV === 'production') {
-  // Create logs directory if it doesn't exist
   const logsDir = path.join(__dirname, 'logs');
   if (!fs.existsSync(logsDir)) {
     fs.mkdirSync(logsDir);
   }
   
-  // Create write stream for access logs
   const accessLogStream = require('fs').createWriteStream(
     path.join(logsDir, 'access.log'),
     { flags: 'a' }
@@ -49,7 +44,6 @@ if (process.env.NODE_ENV === 'production') {
   app.use(morgan(logFormat));
 }
 
-// CORS middleware
 app.use((req, res, next) => {
   const allowedOrigins = [
     /^https:\/\/[^/]+\.bitrix24\.com$/,
@@ -71,11 +65,9 @@ app.use((req, res, next) => {
   next();
 });
 
-// Load routes
 app.use('/auth', require('./routes/auth'));
 app.use('/api', require('./routes/api'));
 
-// Root route handler
 app.get('/', (req, res) => {
   res.json({
     success: true,
@@ -87,7 +79,6 @@ app.get('/', (req, res) => {
   });
 });
 
-// Error handling middleware
 app.use((err, req, res, next) => {
   console.error(err.stack);
   res.status(err.status || 500).json({
@@ -99,7 +90,6 @@ app.use((err, req, res, next) => {
   });
 });
 
-// 404 handler
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -108,7 +98,6 @@ app.use((req, res) => {
   });
 });
 
-// Start server
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);

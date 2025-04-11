@@ -6,9 +6,7 @@ const axios = require('axios');
 const STORAGE_DIR = path.join(__dirname, '../storage');
 const TOKENS_FILE = path.join(STORAGE_DIR, 'tokens.json');
 
-/**
- * Ensure storage directory exists
- */
+
 const ensureStorageDir = () => {
   if (!fsSync.existsSync(STORAGE_DIR)) {
     fsSync.mkdirSync(STORAGE_DIR, { recursive: true });

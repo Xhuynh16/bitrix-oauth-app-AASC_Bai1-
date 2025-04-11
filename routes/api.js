@@ -6,7 +6,6 @@ const tokenService = require('../services/tokenService');
 const fs = require('fs').promises;
 const path = require('path');
 
-// Protect all API routes with token check
 router.use(checkToken());
 
 /**
@@ -96,26 +95,16 @@ router.post('/test/token-refresh', async (req, res) => {
   try {
     const { domain } = req.bitrix;
     
-    // Get current tokens
     const tokens = await tokenService.getTokens(domain);
     if (!tokens) {
       throw new Error('No tokens found');
     }
-
-    // Force token expiration by modifying savedAt
     const tokensPath = path.join(__dirname, '../storage/tokens.json');
     const allTokens = JSON.parse(await fs.readFile(tokensPath, 'utf8'));
-    
-    // Set savedAt to a time that makes the token expired
     allTokens[domain].savedAt = Date.now() - (tokens.expires_in * 1000) - 1000;
     await fs.writeFile(tokensPath, JSON.stringify(allTokens, null, 2));
-
     console.log('Token expiration forced, testing API call...');
-
-    // Try to make an API call - this should trigger a token refresh
     const result = await bitrixApiService.callMethod(domain, 'user.current');
-
-    // Get the new tokens after refresh
     const newTokens = await tokenService.getTokens(domain);
 
     res.json({

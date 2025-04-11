@@ -1,13 +1,9 @@
 # Bitrix24 OAuth Application
-
 Ứng dụng OAuth cho Bitrix24 với tính năng quản lý và tự động refresh token.
-
 ## Yêu cầu hệ thống
-
 - Node.js (v14 trở lên)
 - npm (Node Package Manager)
 - ngrok (để test webhook local)
-
 ## Các bước cài đặt và cấu hình
 
 1. Clone repository:
@@ -74,27 +70,6 @@ Kiểm tra kết nối với Bitrix24:
 $headers = @{ "X-Bitrix-Domain" = "your-domain.bitrix24.com" }
 Invoke-RestMethod -Uri "http://localhost:3000/api/test/user" -Headers $headers
 ```
-
-## Cấu trúc project
-
-```
-bitrix-oauth-app/
-├── controllers/
-│   ├── authController.js    # Xử lý authentication
-│   └── apiController.js     # Xử lý API calls
-├── middleware/
-│   └── authMiddleware.js    # Middleware kiểm tra token
-├── routes/
-│   ├── auth.js             # Routes xử lý auth
-│   └── api.js              # Routes xử lý API
-├── services/
-│   ├── tokenService.js     # Quản lý tokens
-│   └── bitrixApiService.js # Gọi Bitrix24 API
-├── storage/                # Lưu trữ tokens
-├── .env                    # Cấu hình môi trường
-└── server.js              # Entry point
-```
-
 ## API Endpoints
 
 ### Authentication
@@ -120,28 +95,3 @@ Invoke-RestMethod -Uri "http://localhost:3000/api/health"
 $headers = @{ "X-Bitrix-Domain" = "your-domain.bitrix24.com" }
 Invoke-RestMethod -Uri "http://localhost:3000/api/test/user" -Headers $headers
 ```
-
-## Xử lý lỗi
-
-- Token hết hạn sẽ tự động được refresh
-- Lỗi mạng sẽ được retry tự động
-- Rate limiting được xử lý tự động với delay thích hợp
-
-## Security
-
-- Sử dụng helmet để bảo vệ headers
-- CORS được cấu hình chỉ cho phép domain Bitrix24
-- Token được lưu an toàn và mã hóa
-- Validation đầy đủ cho mọi input
-
-## Contributing
-
-1. Fork repository
-2. Tạo branch mới (`git checkout -b feature/your-feature`)
-3. Commit thay đổi (`git commit -am 'Add new feature'`)
-4. Push branch (`git push origin feature/your-feature`)
-5. Tạo Pull Request
-
-## License
-
-MIT License - xem file [LICENSE](LICENSE) để biết thêm chi tiết. 

@@ -6,7 +6,6 @@ const tokenService = require('../services/tokenService');
  * @returns {string|null} Domain or null if not found
  */
 const extractDomain = (req) => {
-  // Try to get domain from various places
   return (
     req.query.domain ||
     req.body.domain ||
@@ -17,9 +16,9 @@ const extractDomain = (req) => {
 
 /**
  * Middleware to check and refresh Bitrix24 tokens
- * @param {Object} options - Middleware options
- * @param {boolean} options.requireToken - Whether to require token (default: true)
- * @param {boolean} options.autoRefresh - Whether to auto refresh expired tokens (default: true)
+ * @param {Object} options 
+ * @param {boolean} options.requireToken 
+ * @param {boolean} options.autoRefresh 
  */
 exports.checkToken = (options = {}) => {
   const {
@@ -31,7 +30,6 @@ exports.checkToken = (options = {}) => {
     try {
       const domain = extractDomain(req);
 
-      // Check if domain is required and present
       if (!domain && requireToken) {
         return res.status(400).json({
           success: false,
@@ -40,12 +38,10 @@ exports.checkToken = (options = {}) => {
         });
       }
 
-      // If domain is not present and token is not required, continue
       if (!domain && !requireToken) {
         return next();
       }
 
-      // Check if tokens exist for domain
       const tokens = await tokenService.getTokens(domain);
       if (!tokens && requireToken) {
         return res.status(401).json({
@@ -55,8 +51,6 @@ exports.checkToken = (options = {}) => {
           domain
         });
       }
-
-      // Check token expiration
       const isExpired = await tokenService.isTokenExpired(domain);
       
       if (isExpired) {
@@ -70,7 +64,6 @@ exports.checkToken = (options = {}) => {
         }
 
         try {
-          // Attempt to refresh the token
           await tokenService.refreshTokens(domain);
         } catch (refreshError) {
           console.error(`Token refresh failed for domain ${domain}:`, refreshError);
@@ -82,8 +75,6 @@ exports.checkToken = (options = {}) => {
           });
         }
       }
-
-      // Add domain and tokens to request for use in route handlers
       req.bitrix = {
         domain,
         tokens: await tokenService.getTokens(domain)

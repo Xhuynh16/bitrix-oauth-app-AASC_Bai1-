@@ -16,10 +16,7 @@ exports.installEvent = async (req, res) => {
   });
 
   try {
-    // Handle both direct JSON and form-encoded data
     const eventData = req.body.event ? req.body : JSON.parse(req.body);
-
-    // Ensure storage directory exists
     const storageDir = path.join(__dirname, '../storage');
     try {
       await fs.mkdir(storageDir, { recursive: true });
@@ -54,8 +51,6 @@ exports.installEvent = async (req, res) => {
         message: 'Missing authentication data'
       });
     }
-
-    // Save tokens
     await tokenService.saveTokens(auth.domain, {
       access_token: auth.access_token,
       refresh_token: auth.refresh_token,
@@ -98,12 +93,10 @@ exports.authCallback = async (req, res) => {
   });
 
   try {
-    // Get code and domain from either query or body
     const code = req.query.code || req.body.code;
     const domain = req.query.domain || req.body.domain;
 
     if (!code || !domain) {
-      // If this is an install event that was sent to the wrong endpoint, redirect it
       if (req.body.event === 'ONAPPINSTALL' && req.body.auth) {
         return exports.installEvent(req, res);
       }
